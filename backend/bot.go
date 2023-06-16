@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
+	"github.com/joho/godotenv"
 )
 
 type ResponseT struct {
@@ -98,9 +99,14 @@ type UserT struct {
 }
 
 var host string = "https://api.telegram.org/bot"
-var token string = "6037986461:AAG-K9ROPEYYXEGMBZIgs_w8Qlvm44bnOzw"
+var token string = ""
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	token = os.Getenv("TELEGRAM_API")
 
 	lastMessage := 0
 
@@ -210,7 +216,7 @@ func sendMessage(chatId int, id int, mesId int, messageTime int, text string, fi
 
 		inlineKeyboardJSON, _ := json.Marshal(inlineKeyboard)
 
-		imagePath := "backend/me.jpg"
+		imagePath := "me.jpg"
 		// Создание буфера для запроса с изображением
 		bodyBuf := &bytes.Buffer{}
 		bodyWriter := multipart.NewWriter(bodyBuf)
