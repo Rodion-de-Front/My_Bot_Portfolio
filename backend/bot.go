@@ -210,7 +210,7 @@ func sendMessage(chatId int, id int, mesId int, messageTime int, text string, fi
 
 		inlineKeyboardJSON, _ := json.Marshal(inlineKeyboard)
 
-		imagePath := "img/me.jpg"
+		imagePath := "backend/me.jpg"
 		// Создание буфера для запроса с изображением
 		bodyBuf := &bytes.Buffer{}
 		bodyWriter := multipart.NewWriter(bodyBuf)
