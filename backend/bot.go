@@ -14,6 +14,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 type ResponseT struct {
@@ -98,9 +100,15 @@ type UserT struct {
 }
 
 var host string = "https://api.telegram.org/bot"
-var token string = "6040500935:AAHIKiZrh0bxku_NNfyr0iuAWo4km2K0ioM"
+
+var token string = ""
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	token = os.Getenv("TELEGRAM_API")
 
 	lastMessage := 0
 
@@ -225,7 +233,7 @@ func sendMessage(chatId int, id int, mesId int, text string, firstName string, b
 
 		inlineKeyboardJSON, _ := json.Marshal(inlineKeyboard)
 
-		imagePath := "backend/me.jpg"
+		imagePath := "me.jpg"
 		// Создание буфера для запроса с изображением
 		bodyBuf := &bytes.Buffer{}
 		bodyWriter := multipart.NewWriter(bodyBuf)
@@ -321,104 +329,3 @@ func sendMessage(chatId int, id int, mesId int, text string, firstName string, b
 	}
 
 }
-
-// func sendMessage(chatId int, messageTime int, text, firstName string) {
-
-// 	fmt.Println(text)
-
-// 	if text == "/start" {
-
-// 		keys := [][]map[string]interface{}{
-// 			{{"text": "Обо мне"}},
-// 			{{"text": "Мои работы"}},
-// 			{{"text": "Моё резюме"}},
-// 			{{"text": "Контакты"}},
-// 		}
-// 		replyKeyboard := map[string]interface{}{
-// 			"keyboard":          keys,
-// 			"resize_keyboard":   true,
-// 			"one_time_keyboard": true,
-// 		}
-// 		keyboardJson, _ := json.Marshal(replyKeyboard)
-// 		http.Get(host + token + "/sendMessage?chat_id=" + strconv.Itoa(chatId) + "&text=Здравствуйте, " + firstName + "! Рад приветствовать Вас в моём боте. Уверен, что он поможет Вам получить ответ на интересующие вас воросы обо мне&reply_markup=" + string(keyboardJson))
-
-// 	}
-
-// 	if text == "Назад" {
-
-// 		keys := [][]map[string]interface{}{
-// 			{{"text": "Обо мне"}},
-// 			{{"text": "Мои работы"}},
-// 			{{"text": "Моё резюме"}},
-// 			{{"text": "Контакты"}},
-// 		}
-// 		replyKeyboard := map[string]interface{}{
-// 			"keyboard":          keys,
-// 			"resize_keyboard":   true,
-// 			"one_time_keyboard": true,
-// 		}
-// 		keyboardJson, _ := json.Marshal(replyKeyboard)
-// 		http.Get(host + token + "/sendMessage?chat_id=" + strconv.Itoa(chatId) + "&text=Что вы ещё хотите узнать обо мне?&reply_markup=" + string(keyboardJson))
-
-// 	}
-
-// 	if text == "Обо мне" {
-// 		// Если нажата любая кнопка
-// 		backButton := [][]map[string]interface{}{
-// 			{{"text": "Назад"}},
-// 		}
-// 		backKeyboard := map[string]interface{}{
-// 			"keyboard":          backButton,
-// 			"resize_keyboard":   true,
-// 			"one_time_keyboard": true,
-// 		}
-// 		backKeyboardJson, _ := json.Marshal(backKeyboard)
-// 		http.Get(host + token + "/sendMessage?chat_id=" + strconv.Itoa(chatId) + "&text= Я Full Stack разработчик - специалист, обладающий навыками и опытом в разработке как на стороне клиента (frontend), так и на стороне сервера (backend). Я занимаюсь созданием веб-приложений и владею широким спектром технологий и инструментов. На стороне клиента я работаю с языками программирования, такими как HTML, CSS и JavaScript. На стороне сервера я занимаюсь разработкой бэкенд-логики и взаимодействием с базами данных. Я работаю с языками программирования, такими как Golang или PHP. Кроме того, я знаком с базой данных MySQL и умею эффективно работать с ней. Я также разбираюсь в системе контроля версий Git. Как Full Stack разработчик, я способен охватывать полный цикл разработки приложений - от проектирования и разработки до развертывания. Буду рад помочь воплотить ваши идеи в реальность и достичь поставленных целей в разработке." + "&reply_markup=" + string(backKeyboardJson))
-
-// 	}
-
-// 	if text == "Мои работы" {
-
-// 		// Если нажата любая кнопка
-// 		backButton := [][]map[string]interface{}{
-// 			{{"text": "Назад"}},
-// 		}
-// 		backKeyboard := map[string]interface{}{
-// 			"keyboard":          backButton,
-// 			"resize_keyboard":   true,
-// 			"one_time_keyboard": true,
-// 		}
-// 		backKeyboardJson, _ := json.Marshal(backKeyboard)
-// 		http.Get(host + token + "/sendMessage?chat_id=" + strconv.Itoa(chatId) + "&text=Вот ссылка на моё подробное резюме: https://rodion-de-front.github.io/rodionka.site/" + "&reply_markup=" + string(backKeyboardJson))
-// 	}
-
-// 	if text == "Моё резюме" {
-// 		// Если нажата любая кнопка
-// 		backButton := [][]map[string]interface{}{
-// 			{{"text": "Назад"}},
-// 		}
-// 		backKeyboard := map[string]interface{}{
-// 			"keyboard":          backButton,
-// 			"resize_keyboard":   true,
-// 			"one_time_keyboard": true,
-// 		}
-// 		backKeyboardJson, _ := json.Marshal(backKeyboard)
-// 		http.Get(host + token + "/sendMessage?chat_id=" + strconv.Itoa(chatId) + "&text=Вот ссылка на моё подробное резюме: https://rodion-de-front.github.io/rodionka.site/" + "&reply_markup=" + string(backKeyboardJson))
-
-// 	}
-
-// 	if text == "Контакты" {
-// 		// Если нажата любая кнопка
-// 		backButton := [][]map[string]interface{}{
-// 			{{"text": "Назад"}},
-// 		}
-// 		backKeyboard := map[string]interface{}{
-// 			"keyboard":          backButton,
-// 			"resize_keyboard":   true,
-// 			"one_time_keyboard": true,
-// 		}
-// 		backKeyboardJson, _ := json.Marshal(backKeyboard)
-// 		http.Get(host + token + "/sendMessage?chat_id=" + strconv.Itoa(chatId) + "&text=Свяжитесь со мной. VK: https://vk.com/fantom_uk Telegram: @rodionaka Телефон: +7 (916) 762-53-03" + "&reply_markup=" + string(backKeyboardJson))
-
-// 	}
-// }
