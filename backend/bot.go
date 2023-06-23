@@ -98,7 +98,7 @@ type UserT struct {
 }
 
 var host string = "https://api.telegram.org/bot"
-var token string = "6037986461:AAG-K9ROPEYYXEGMBZIgs_w8Qlvm44bnOzw"
+var token string = "6040500935:AAHIKiZrh0bxku_NNfyr0iuAWo4km2K0ioM"
 
 func main() {
 
@@ -139,7 +139,6 @@ func main() {
 
 			text := responseObj.Result[i].Message.Text
 			chatId := responseObj.Result[i].Message.From.ID
-			messageTime := responseObj.Result[i].Message.Date
 			firstName := responseObj.Result[i].Message.From.FirstName
 			button := need.Result[i].CallbackQuery.Data
 			id := need.Result[i].CallbackQuery.From.ID
@@ -148,7 +147,7 @@ func main() {
 			//пишем бизнес логику ----------- мозги
 
 			//отвечаем пользователю на его сообщение
-			go sendMessage(chatId, id, mesId, messageTime, text, firstName, button)
+			go sendMessage(chatId, id, mesId, text, firstName, button)
 
 		}
 
@@ -158,14 +157,14 @@ func main() {
 	}
 }
 
-func sendMessage(chatId int, id int, mesId int, messageTime int, text string, firstName string, button string) {
+func sendMessage(chatId int, id int, mesId int, text string, firstName string, button string) {
 
 	if text == "/start" {
 
 		buttons := [][]map[string]interface{}{
 			{{"text": "Обо мне 👨🏻‍💻", "callback_data": "about"}},
 			{{"text": "Мои работы 🎯", "callback_data": "works"}},
-			{{"text": "Моё резюме 📋", "callback_data": "resume"}},
+			{{"text": "Моё резюме 📋", "url": "https://rodion-de-front.github.io/rodionka.site/"}},
 			{{"text": "Контакты 📱", "callback_data": "contacts"}},
 		}
 
@@ -175,7 +174,6 @@ func sendMessage(chatId int, id int, mesId int, messageTime int, text string, fi
 
 		inlineKeyboardJSON, _ := json.Marshal(inlineKeyboard)
 
-		http.Get(host + token + "/deleteMessage?chat_id=" + strconv.Itoa(id) + "&message_id=" + strconv.Itoa(mesId))
 		http.Get(host + token + "/sendMessage?chat_id=" + strconv.Itoa(chatId) + "&text=Здравствуйте, " + firstName + "! Рад приветствовать Вас в моём боте. Уверен, что он поможет получить ответ на интересующие вас вопросы обо мне&reply_markup=" + string(inlineKeyboardJSON))
 
 	}
@@ -184,7 +182,24 @@ func sendMessage(chatId int, id int, mesId int, messageTime int, text string, fi
 		buttons := [][]map[string]interface{}{
 			{{"text": "Обо мне 👨🏻‍💻", "callback_data": "about"}},
 			{{"text": "Мои работы 🎯", "callback_data": "works"}},
-			{{"text": "Моё резюме 📋", "callback_data": "resume"}},
+			{{"text": "Моё резюме 📋", "url": "https://rodion-de-front.github.io/rodionka.site/"}},
+			{{"text": "Контакты 📱", "callback_data": "contacts"}},
+		}
+
+		inlineKeyboard := map[string]interface{}{
+			"inline_keyboard": buttons,
+		}
+
+		inlineKeyboardJSON, _ := json.Marshal(inlineKeyboard)
+
+		http.Get(host + token + "/editMessageText?chat_id=" + strconv.Itoa(id) + "&message_id=" + strconv.Itoa(mesId) + "&text=" + url.QueryEscape("Что ещё вы хотите узнать?") + "&reply_markup=" + string(inlineKeyboardJSON))
+	}
+
+	if button == "backFromPhoto" {
+		buttons := [][]map[string]interface{}{
+			{{"text": "Обо мне 👨🏻‍💻", "callback_data": "about"}},
+			{{"text": "Мои работы 🎯", "callback_data": "works"}},
+			{{"text": "Моё резюме 📋", "url": "https://rodion-de-front.github.io/rodionka.site/"}},
 			{{"text": "Контакты 📱", "callback_data": "contacts"}},
 		}
 
@@ -201,7 +216,7 @@ func sendMessage(chatId int, id int, mesId int, messageTime int, text string, fi
 	if button == "about" {
 
 		buttons := [][]map[string]interface{}{
-			{{"text": "Назад 🔙", "callback_data": "back"}},
+			{{"text": "Назад 🔙", "callback_data": "backFromPhoto"}},
 		}
 
 		inlineKeyboard := map[string]interface{}{
@@ -278,7 +293,7 @@ func sendMessage(chatId int, id int, mesId int, messageTime int, text string, fi
 
 	if button == "works" {
 		buttons := [][]map[string]interface{}{
-			{{"text": "Проекты 👀", "callback_data": "resume"}},
+			{{"text": "Проекты 👀", "url": "https://rodion-de-front.github.io/rodionka.site/"}},
 			{{"text": "Назад 🔙", "callback_data": "back"}},
 		}
 
@@ -288,23 +303,7 @@ func sendMessage(chatId int, id int, mesId int, messageTime int, text string, fi
 
 		inlineKeyboardJSON, _ := json.Marshal(inlineKeyboard)
 
-		http.Get(host + token + "/deleteMessage?chat_id=" + strconv.Itoa(id) + "&message_id=" + strconv.Itoa(mesId))
-		http.Get(host + token + "/sendMessage?chat_id=" + strconv.Itoa(id) + "&text=Я имею большой опыт по работе с CRM системами, лендингом страниц и написанию ботов. Весь перечень моих крупных проектов Вы можете увидеть в моём резюме. &reply_markup=" + string(inlineKeyboardJSON))
-	}
-
-	if button == "resume" {
-		buttons := [][]map[string]interface{}{
-			{{"text": "Назад 🔙", "callback_data": "back"}},
-		}
-
-		inlineKeyboard := map[string]interface{}{
-			"inline_keyboard": buttons,
-		}
-
-		inlineKeyboardJSON, _ := json.Marshal(inlineKeyboard)
-
-		http.Get(host + token + "/deleteMessage?chat_id=" + strconv.Itoa(id) + "&message_id=" + strconv.Itoa(mesId))
-		http.Get(host + token + "/sendMessage?chat_id=" + strconv.Itoa(id) + "&text=Вот ссылка на моё подробное резюме: https://rodion-de-front.github.io/rodionka.site/&reply_markup=" + string(inlineKeyboardJSON))
+		http.Get(host + token + "/editMessageText?chat_id=" + strconv.Itoa(id) + "&message_id=" + strconv.Itoa(mesId) + "&text=" + url.QueryEscape("Я имею большой опыт по работе с CRM системами, лендингом страниц и написанию ботов. Весь перечень моих крупных проектов Вы можете увидеть в моём резюме.") + "&reply_markup=" + string(inlineKeyboardJSON))
 	}
 
 	if button == "contacts" {
@@ -318,8 +317,7 @@ func sendMessage(chatId int, id int, mesId int, messageTime int, text string, fi
 
 		inlineKeyboardJSON, _ := json.Marshal(inlineKeyboard)
 
-		http.Get(host + token + "/deleteMessage?chat_id=" + strconv.Itoa(id) + "&message_id=" + strconv.Itoa(mesId))
-		http.Get(host + token + "/sendMessage?chat_id=" + strconv.Itoa(id) + "&text=Свяжитесь со мной. VK: https://vk.com/fantom_uk Telegram: @rodionaka Телефон: +7 (916) 762-53-03&reply_markup=" + string(inlineKeyboardJSON))
+		http.Get(host + token + "/editMessageText?chat_id=" + strconv.Itoa(id) + "&message_id=" + strconv.Itoa(mesId) + "&text=Свяжитесь со мной. VK: https://vk.com/fantom_uk Telegram: @rodionaka Телефон: +7 (916) 762-53-03&reply_markup=" + string(inlineKeyboardJSON))
 	}
 
 }
