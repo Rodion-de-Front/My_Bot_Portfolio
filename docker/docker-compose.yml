@@ -8,6 +8,3 @@ services:
       dockerfile: Dockerfile-backend
     volumes:
       - ./../backend/:/app/
-    ports:
-      - 8080:8091
-
