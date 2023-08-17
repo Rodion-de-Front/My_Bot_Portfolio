@@ -103,8 +103,7 @@ var token string = ""
 
 func main() {
 
-	//token = os.Getenv("TELEGRAM_API")
-	token = "5653970898:AAGXgyNN-_SGwc8UDQSYbGO3VN3B-ryaHh8"
+	token = os.Getenv("TELEGRAM_API")
 
 	lastMessage := 0
 
