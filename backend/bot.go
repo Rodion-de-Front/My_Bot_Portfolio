@@ -14,8 +14,6 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
-
-	"github.com/joho/godotenv"
 )
 
 type ResponseT struct {
@@ -104,11 +102,9 @@ var host string = "https://api.telegram.org/bot"
 var token string = ""
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	token = os.Getenv("TELEGRAM_API")
+
+	//token = os.Getenv("TELEGRAM_API")
+	token = "5653970898:AAGXgyNN-_SGwc8UDQSYbGO3VN3B-ryaHh8"
 
 	lastMessage := 0
 
@@ -325,7 +321,27 @@ func sendMessage(chatId int, id int, mesId int, text string, firstName string, b
 
 		inlineKeyboardJSON, _ := json.Marshal(inlineKeyboard)
 
-		http.Get(host + token + "/editMessageText?chat_id=" + strconv.Itoa(id) + "&message_id=" + strconv.Itoa(mesId) + "&text=Свяжитесь со мной. VK: https://vk.com/fantom_uk Telegram: @rodionaka Телефон: +7 (916) 762-53-03&reply_markup=" + string(inlineKeyboardJSON))
+		URL := url.QueryEscape("Свяжитесь со мной.\nVK: https://vk.com/fantom_uk\nTelegram: @rodionaka\nТелефон: +7 (916) 762-53-03")
+		apiURL := host + token + "/editMessageText?chat_id=" + strconv.Itoa(id) + "&message_id=" + strconv.Itoa(mesId) + "&text=" + URL + "&reply_markup=" + string(inlineKeyboardJSON)
+
+		requestURL, err := url.Parse(apiURL)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Создание HTTP GET-запроса с параметрами
+		request, err := http.NewRequest("GET", requestURL.String(), nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Отправка запроса
+		client := &http.Client{}
+		response, err := client.Do(request)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer response.Body.Close()
 	}
 
 }
