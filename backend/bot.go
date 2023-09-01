@@ -99,11 +99,9 @@ type UserT struct {
 
 var host string = "https://api.telegram.org/bot"
 
-var token string = ""
+var token string = os.Getenv("TELEGRAM_API")
 
 func main() {
-
-	token = os.Getenv("TELEGRAM_API")
 
 	lastMessage := 0
 
